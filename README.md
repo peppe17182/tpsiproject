@@ -9,7 +9,7 @@
 ## 2. URL del Web Service
 
 ```
-http://localhost/web/collector_tracker/
+http://localhost/
 ```
 
 ---
