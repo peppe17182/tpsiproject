@@ -42,23 +42,23 @@ function handleItems($method, $param1, $param2) {
                     sendResponse(404, ['error' => 'Oggetto non trovato.']);
                 }
             } else {
-                // Lista oggetti (dati parziali: id, name, rating)
+                // Lista oggetti (dati parziali: id, name, rating, image_url)
                 // Filtro opzionale via query string: ?category_id=X o ?user_id=X
                 $catId  = $_GET['category_id'] ?? null;
                 $userId = $_GET['user_id'] ?? null;
 
                 if ($catId) {
                     $stmt = $pdo->prepare(
-                        "SELECT id, name, rating FROM items WHERE category_id = :cid"
+                        "SELECT id, name, rating, image_url FROM items WHERE category_id = :cid"
                     );
                     $stmt->execute(['cid' => $catId]);
                 } elseif ($userId) {
                     $stmt = $pdo->prepare(
-                        "SELECT id, name, rating FROM items WHERE user_id = :uid"
+                        "SELECT id, name, rating, image_url FROM items WHERE user_id = :uid"
                     );
                     $stmt->execute(['uid' => $userId]);
                 } else {
-                    $stmt = $pdo->query("SELECT id, name, rating FROM items");
+                    $stmt = $pdo->query("SELECT id, name, rating, image_url FROM items");
                 }
                 sendResponse(200, $stmt->fetchAll());
             }
@@ -76,14 +76,15 @@ function handleItems($method, $param1, $param2) {
                 sendResponse(400, ['error' => 'Il rating deve essere compreso tra 1 e 10.']);
             }
             $stmt = $pdo->prepare(
-                "INSERT INTO items (name, description, rating, acquisition_date, user_id, category_id)
-                 VALUES (:name, :desc, :rating, :date, :uid, :cid)"
+                "INSERT INTO items (name, description, rating, acquisition_date, image_url, user_id, category_id)
+                 VALUES (:name, :desc, :rating, :date, :img, :uid, :cid)"
             );
             $stmt->execute([
                 'name'   => trim($data['name']),
                 'desc'   => $data['description'] ?? null,
                 'rating' => $rating,
                 'date'   => $data['acquisition_date'] ?? null,
+                'img'    => $data['image_url'] ?? null,
                 'uid'    => $data['user_id'],
                 'cid'    => $data['category_id']
             ]);
@@ -109,7 +110,7 @@ function handleItems($method, $param1, $param2) {
             }
             $stmt = $pdo->prepare(
                 "UPDATE items SET name = :name, description = :desc, rating = :rating,
-                 acquisition_date = :date, user_id = :uid, category_id = :cid
+                 acquisition_date = :date, image_url = :img, user_id = :uid, category_id = :cid
                  WHERE id = :id"
             );
             $stmt->execute([
@@ -118,6 +119,7 @@ function handleItems($method, $param1, $param2) {
                 'desc'   => $data['description'] ?? null,
                 'rating' => $rating,
                 'date'   => $data['acquisition_date'] ?? null,
+                'img'    => $data['image_url'] ?? null,
                 'uid'    => $data['user_id'],
                 'cid'    => $data['category_id']
             ]);
@@ -137,7 +139,7 @@ function handleItems($method, $param1, $param2) {
                 sendResponse(400, ['error' => 'Nessun dato fornito per PATCH.']);
             }
             // Costruzione dinamica sicura della query UPDATE
-            $allowed = ['name','description','rating','acquisition_date','user_id','category_id'];
+            $allowed = ['name','description','rating','acquisition_date','image_url','user_id','category_id'];
             $sets   = [];
             $params = ['id' => $id];
             foreach ($allowed as $field) {
@@ -196,7 +198,7 @@ function handleItemsComposed($pdo, $subResource, $subId) {
     switch ($subResource) {
         case 'category':
             $stmt = $pdo->prepare(
-                "SELECT id, name, rating FROM items WHERE category_id = :cid"
+                "SELECT id, name, rating, image_url FROM items WHERE category_id = :cid"
             );
             $stmt->execute(['cid' => $subId]);
             sendResponse(200, $stmt->fetchAll());
@@ -204,7 +206,7 @@ function handleItemsComposed($pdo, $subResource, $subId) {
 
         case 'user':
             $stmt = $pdo->prepare(
-                "SELECT id, name, rating FROM items WHERE user_id = :uid"
+                "SELECT id, name, rating, image_url FROM items WHERE user_id = :uid"
             );
             $stmt->execute(['uid' => $subId]);
             sendResponse(200, $stmt->fetchAll());

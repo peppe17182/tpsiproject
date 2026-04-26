@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS items (
     description TEXT,
     rating INT NOT NULL DEFAULT 1 CHECK (rating BETWEEN 1 AND 10),
     acquisition_date DATE,
+    image_url VARCHAR(255),
     user_id INT NOT NULL,
     category_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

@@ -75,6 +75,7 @@ Entita' principale: un oggetto da collezione, associato a un utente e a una cate
 | description       | TEXT    | Descrizione dettagliata                 |
 | rating            | INT     | Voto da 1 a 10                          |
 | acquisition_date  | DATE    | Data di acquisizione                    |
+| image_url         | VARCHAR | URL dell'immagine dell'oggetto (opzionale) |
 | user_id           | INT     | FK verso users.id                       |
 | category_id       | INT     | FK verso categories.id                  |
 | created_at        | TIMESTAMP | Data di inserimento nel sistema       |
