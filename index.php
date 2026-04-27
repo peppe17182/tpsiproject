@@ -15,8 +15,6 @@ try {
     sendError(500, "Errore critico di sistema: DB offline.");
 }
 
-// Controllo Livello 1: API Key Globale (RIMOSSO)
-
 // Parsing URL
 $url = isset($_GET['url']) ? trim($_GET['url'], '/') : '';
 $parts = $url !== '' ? explode('/', $url) : [];
@@ -47,7 +45,8 @@ switch ($resource) {
 
     case 'stats':
         require_once __DIR__ . '/api/Stats.php';
-        handleStats($pdo, $method);
+        // /stats, /stats/65
+        handleStats($pdo, $method, $param1);
         break;
 
     case 'upload':
