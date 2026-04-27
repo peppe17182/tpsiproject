@@ -66,9 +66,10 @@ L'entità principale del sistema. Associato all'utente loggato e a una delle sue
 
 ### 4.5 Statistiche (`stats`)
 Risorsa virtuale che aggrega dati.
-| Metodo | URI                  | Descrizione                                       |
-|--------|----------------------|---------------------------------------------------|
-| GET    | `/stats`             | Ritorna statistiche e raggruppamenti del DB       |
+| Metodo | URI                      | Descrizione                                             |
+|--------|--------------------------|---------------------------------------------------------|
+| GET    | `/stats`                 | Statistiche globali nerd (Collector Score, timeline, ecc) |
+| GET    | `/stats/{category_id}`   | Statistiche filtrate e calcolate solo su quella categoria |
 
 ### 4.6 Caricamento File (`upload`)
 Le immagini sono strettamente legate all'oggetto.
