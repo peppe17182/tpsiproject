@@ -30,7 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Container(
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Color(0xFF6366F1), Color(0xFF4F46E5)],
+                    colors: [Color(0xFF1A237E), Color(0xFF101416)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -153,7 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         
                         SizedBox(
                           width: double.infinity,
-                          child: FilledButton(
+                          child: ElevatedButton(
                             onPressed: authProvider.isLoading
                                 ? null
                                 : () async {

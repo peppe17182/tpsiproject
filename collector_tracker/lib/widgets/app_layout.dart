@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 
 import '../providers/auth_provider.dart';
 
+import 'glass_panel.dart';
+
 class AppLayout extends StatelessWidget {
   final Widget child;
 
@@ -27,7 +29,7 @@ class AppLayout extends StatelessWidget {
       const NavigationRailDestination(
         icon: Icon(Icons.home_outlined),
         selectedIcon: Icon(Icons.home),
-        label: Text('Home'),
+        label: Text('Dashboard'),
       ),
       const NavigationRailDestination(
         icon: Icon(Icons.category_outlined),
@@ -37,12 +39,12 @@ class AppLayout extends StatelessWidget {
       const NavigationRailDestination(
         icon: Icon(Icons.list_alt_outlined),
         selectedIcon: Icon(Icons.list_alt),
-        label: Text('Items'),
+        label: Text('Inventory'),
       ),
       const NavigationRailDestination(
         icon: Icon(Icons.bar_chart_outlined),
         selectedIcon: Icon(Icons.bar_chart),
-        label: Text('Stats'),
+        label: Text('Nerd Stats'),
       ),
     ];
 
@@ -63,95 +65,113 @@ class AppLayout extends StatelessWidget {
       }
     }
 
-    return Scaffold(
-      appBar: isWide ? null : AppBar(
-        title: const Text('Collector Tracker'),
-      ),
-      drawer: isWide ? null : Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primaryContainer,
-              ),
-              child: const Text('Collector Tracker', style: TextStyle(fontSize: 24)),
-            ),
-            ListTile(
-              leading: const Icon(Icons.home),
-              title: const Text('Home'),
-              selected: getSelectedIndex() == 0,
-              onTap: () {
-                Navigator.pop(context);
-                onDestinationSelected(0);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.category),
-              title: const Text('Categories'),
-              selected: getSelectedIndex() == 1,
-              onTap: () {
-                Navigator.pop(context);
-                onDestinationSelected(1);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.list_alt),
-              title: const Text('Items'),
-              selected: getSelectedIndex() == 2,
-              onTap: () {
-                Navigator.pop(context);
-                onDestinationSelected(2);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.bar_chart),
-              title: const Text('Stats'),
-              selected: getSelectedIndex() == 3,
-              onTap: () {
-                Navigator.pop(context);
-                onDestinationSelected(3);
-              },
-            ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text('Logout'),
-              onTap: () {
-                context.read<AuthProvider>().logout();
-              },
-            ),
-          ],
-        ),
-      ),
-      body: Row(
-        children: [
-          if (isWide)
-            NavigationRail(
-              extended: width > 1000,
-              destinations: destinations,
-              selectedIndex: getSelectedIndex(),
-              onDestinationSelected: onDestinationSelected,
-              trailing: Expanded(
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 16.0),
-                    child: IconButton(
-                      icon: const Icon(Icons.logout),
-                      onPressed: () {
-                        context.read<AuthProvider>().logout();
-                      },
-                      tooltip: 'Logout',
-                    ),
+    Widget buildDesktopNav() {
+      final colorScheme = Theme.of(context).colorScheme;
+      return Container(
+        color: colorScheme.background, // fallback for lowest
+        child: NavigationRail(
+          extended: width > 1000,
+          backgroundColor: Colors.transparent,
+          destinations: destinations,
+          selectedIndex: getSelectedIndex(),
+          onDestinationSelected: onDestinationSelected,
+          unselectedIconTheme: IconThemeData(color: colorScheme.outline),
+          selectedIconTheme: IconThemeData(color: colorScheme.primary),
+          unselectedLabelTextStyle: TextStyle(color: colorScheme.outline),
+          selectedLabelTextStyle: TextStyle(color: colorScheme.primary, fontWeight: FontWeight.bold),
+          leading: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 24.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.layers, color: colorScheme.primary, size: 32),
+                if (width > 1000) ...[
+                  const SizedBox(width: 12),
+                  Text(
+                    'Collectiv',
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          color: colorScheme.onSurface,
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
+                ],
+              ],
+            ),
+          ),
+          trailing: Expanded(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 24.0),
+                child: IconButton(
+                  icon: Icon(Icons.logout, color: colorScheme.error),
+                  onPressed: () {
+                    context.read<AuthProvider>().logout();
+                  },
+                  tooltip: 'Logout',
                 ),
               ),
             ),
-          if (isWide) const VerticalDivider(thickness: 1, width: 1),
-          Expanded(child: child),
-        ],
-      ),
+          ),
+        ),
+      );
+    }
+
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Scaffold(
+      backgroundColor: colorScheme.background,
+      appBar: isWide
+          ? null
+          : AppBar(
+              backgroundColor: colorScheme.background,
+              title: const Text('Collectiv'),
+              actions: [
+                IconButton(
+                  icon: Icon(Icons.logout, color: colorScheme.error),
+                  onPressed: () => context.read<AuthProvider>().logout(),
+                ),
+              ],
+            ),
+      body: isWide
+          ? Row(
+              children: [
+                buildDesktopNav(),
+                VerticalDivider(thickness: 1, width: 1, color: colorScheme.outlineVariant),
+                Expanded(child: child),
+              ],
+            )
+          : Stack(
+              children: [
+                child,
+                Positioned(
+                  bottom: 16,
+                  left: 16,
+                  right: 16,
+                  child: GlassPanel(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    borderRadius: 32,
+                    child: BottomNavigationBar(
+                      elevation: 0,
+                      backgroundColor: Colors.transparent,
+                      type: BottomNavigationBarType.fixed,
+                      currentIndex: getSelectedIndex(),
+                      onTap: onDestinationSelected,
+                      selectedItemColor: colorScheme.primary,
+                      unselectedItemColor: colorScheme.outline,
+                      showUnselectedLabels: true,
+                      items: destinations
+                          .map((d) => BottomNavigationBarItem(
+                                icon: d.icon,
+                                activeIcon: d.selectedIcon,
+                                label: (d.label as Text).data,
+                              ))
+                          .toList(),
+                    ),
+                  ),
+                ),
+              ],
+            ),
     );
   }
 }

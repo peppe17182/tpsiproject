@@ -36,7 +36,19 @@ class ItemProvider extends ChangeNotifier {
       };
 
       final response = await _apiService.get('/items', queryParams: queryParams);
-      if (response is List) {
+      if (response is Map<String, dynamic> && response.containsKey('data')) {
+        final List<dynamic> data = response['data'];
+        final newItems = data.map((json) => Item.fromJson(json)).toList();
+        _items.addAll(newItems);
+        
+        if (response['meta'] != null) {
+          final meta = response['meta'];
+          _hasMore = meta['current_page'] < meta['total_pages'];
+        } else {
+          _hasMore = newItems.length >= 20;
+        }
+        _currentPage++;
+      } else if (response is List) {
         final newItems = response.map((json) => Item.fromJson(json)).toList();
         if (newItems.length < 20) {
           _hasMore = false;

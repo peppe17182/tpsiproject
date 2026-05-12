@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/stats_provider.dart';
 
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -36,11 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
               titlePadding: const EdgeInsets.only(left: 16, bottom: 16),
               background: Container(
                 decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Color(0xFF6366F1), Color(0xFF4F46E5)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
+                  color: Color(0xFF181C1E), // AppColors.surfaceContainerLow
                 ),
                 child: Stack(
                   children: [
@@ -79,10 +76,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               shape: BoxShape.circle,
                               color: Colors.white.withOpacity(0.2),
                             ),
-                            child: const CircleAvatar(
+                            child: CircleAvatar(
                               radius: 40,
                               backgroundColor: Colors.white,
-                              child: Icon(Icons.person, size: 40, color: Color(0xFF6366F1)),
+                              child: Icon(Icons.person, size: 40, color: Theme.of(context).colorScheme.primary),
                             ),
                           ),
                           const SizedBox(height: 16),
@@ -126,21 +123,21 @@ class _HomeScreenState extends State<HomeScreen> {
                         'Categories',
                         statsProvider.globalStats?.totalCategories.toString() ?? '0',
                         Icons.category_rounded,
-                        const Color(0xFF10B981),
+                        const Color(0xFFBDC2FF), // Primary
                       ),
                       _buildStatCard(
                         context,
                         'Total Items',
                         statsProvider.globalStats?.totalItems.toString() ?? '0',
                         Icons.collections_bookmark_rounded,
-                        const Color(0xFF3B82F6),
+                        const Color(0xFF40E56C), // Secondary (Emerald)
                       ),
                       _buildStatCard(
                         context,
                         'Avg. Rating',
                         statsProvider.globalStats?.averageRating.toStringAsFixed(1) ?? '0.0',
                         Icons.star_rounded,
-                        const Color(0xFFF59E0B),
+                        const Color(0xFFCDBDFF), // Tertiary (Violet)
                       ),
                     ],
                   ),
