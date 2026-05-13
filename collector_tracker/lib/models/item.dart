@@ -26,11 +26,19 @@ class Item {
       id: json['id'],
       name: json['name'],
       description: json['description'],
-      rating: json['rating'] != null ? int.tryParse(json['rating'].toString()) : null,
+      rating: json['rating'] != null
+          ? int.tryParse(json['rating'].toString())
+          : null,
       acquisitionDate: json['acquisition_date'],
-      imageUrl: json['image_url'] != null ? '${json['image_url']}?v=${DateTime.now().millisecondsSinceEpoch}' : null,
-      userId: json['user_id'] != null ? int.tryParse(json['user_id'].toString()) : null,
-      categoryId: json['category_id'] != null ? int.tryParse(json['category_id'].toString()) : null,
+      imageUrl: json['image_url'] != null
+          ? '${json['image_url']}?v=${DateTime.now().millisecondsSinceEpoch}'
+          : null,
+      userId: json['user_id'] != null
+          ? int.tryParse(json['user_id'].toString())
+          : null,
+      categoryId: json['category_id'] != null
+          ? int.tryParse(json['category_id'].toString())
+          : null,
       createdAt: json['created_at'],
     );
   }

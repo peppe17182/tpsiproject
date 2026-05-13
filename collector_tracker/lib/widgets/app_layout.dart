@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth_provider.dart';
-
 import 'glass_panel.dart';
 
 class AppLayout extends StatelessWidget {
@@ -15,163 +14,488 @@ class AppLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final isWide = width > 800;
-    
+    final isExtended = width > 1080;
+    final cs = Theme.of(context).colorScheme;
+
     final currentPath = GoRouterState.of(context).matchedLocation;
-    
-    int getSelectedIndex() {
+
+    int selectedIndex() {
       if (currentPath.startsWith('/items')) return 2;
       if (currentPath.startsWith('/categories')) return 1;
       if (currentPath.startsWith('/stats')) return 3;
-      return 0; // home
+      if (currentPath.startsWith('/settings')) return 4;
+      return 0;
     }
 
-    final destinations = [
-      const NavigationRailDestination(
-        icon: Icon(Icons.home_outlined),
-        selectedIcon: Icon(Icons.home),
+    final destinations = const [
+      NavigationRailDestination(
+        icon: Icon(Icons.space_dashboard_outlined),
+        selectedIcon: Icon(Icons.space_dashboard),
         label: Text('Dashboard'),
       ),
-      const NavigationRailDestination(
-        icon: Icon(Icons.category_outlined),
-        selectedIcon: Icon(Icons.category),
+      NavigationRailDestination(
+        icon: Icon(Icons.folder_outlined),
+        selectedIcon: Icon(Icons.folder),
         label: Text('Categories'),
       ),
-      const NavigationRailDestination(
-        icon: Icon(Icons.list_alt_outlined),
-        selectedIcon: Icon(Icons.list_alt),
+      NavigationRailDestination(
+        icon: Icon(Icons.grid_view_outlined),
+        selectedIcon: Icon(Icons.grid_view),
         label: Text('Inventory'),
       ),
-      const NavigationRailDestination(
-        icon: Icon(Icons.bar_chart_outlined),
-        selectedIcon: Icon(Icons.bar_chart),
-        label: Text('Nerd Stats'),
+      NavigationRailDestination(
+        icon: Icon(Icons.insights_outlined),
+        selectedIcon: Icon(Icons.insights),
+        label: Text('Analytics'),
       ),
     ];
 
-    void onDestinationSelected(int index) {
+    void onTap(int index) {
       switch (index) {
         case 0:
           context.go('/');
-          break;
         case 1:
           context.go('/categories');
-          break;
         case 2:
           context.go('/items');
-          break;
         case 3:
           context.go('/stats');
-          break;
+        case 4:
+          context.go('/settings');
       }
     }
 
-    Widget buildDesktopNav() {
-      final colorScheme = Theme.of(context).colorScheme;
+    // ─── Desktop Navigation Rail ───
+    Widget desktopNav() {
       return Container(
-        color: colorScheme.background, // fallback for lowest
-        child: NavigationRail(
-          extended: width > 1000,
-          backgroundColor: Colors.transparent,
-          destinations: destinations,
-          selectedIndex: getSelectedIndex(),
-          onDestinationSelected: onDestinationSelected,
-          unselectedIconTheme: IconThemeData(color: colorScheme.outline),
-          selectedIconTheme: IconThemeData(color: colorScheme.primary),
-          unselectedLabelTextStyle: TextStyle(color: colorScheme.outline),
-          selectedLabelTextStyle: TextStyle(color: colorScheme.primary, fontWeight: FontWeight.bold),
-          leading: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 24.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+        margin: const EdgeInsets.all(12),
+        child: GlassPanel(
+          padding: EdgeInsets.zero,
+          borderRadius: 24,
+          child: SizedBox(
+            width: isExtended ? 220 : 72,
+            child: Column(
               children: [
-                Icon(Icons.layers, color: colorScheme.primary, size: 32),
-                if (width > 1000) ...[
-                  const SizedBox(width: 12),
-                  Text(
-                    'Collectiv',
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          color: colorScheme.onSurface,
-                          fontWeight: FontWeight.bold,
+                // Logo
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 28),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [cs.primary, cs.secondary],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(14),
+                          boxShadow: [
+                            BoxShadow(
+                              color: cs.primary.withValues(alpha: 0.3),
+                              blurRadius: 16,
+                            ),
+                          ],
                         ),
+                        child: const Icon(
+                          Icons.layers_rounded,
+                          color: Colors.white,
+                          size: 22,
+                        ),
+                      ),
+                      if (isExtended) ...[
+                        const SizedBox(width: 14),
+                        Text(
+                          'Collectiv',
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: -0.5,
+                              ),
+                        ),
+                      ],
+                    ],
                   ),
-                ],
-              ],
-            ),
-          ),
-          trailing: Expanded(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 24.0),
-                child: IconButton(
-                  icon: Icon(Icons.logout, color: colorScheme.error),
-                  onPressed: () {
-                    context.read<AuthProvider>().logout();
-                  },
-                  tooltip: 'Logout',
                 ),
-              ),
+
+                // Divider
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isExtended ? 20 : 16,
+                  ),
+                  child: Divider(
+                    color: cs.outline.withValues(alpha: 0.15),
+                    height: 1,
+                  ),
+                ),
+
+                const SizedBox(height: 8),
+
+                // Navigation Items
+                ...List.generate(destinations.length, (i) {
+                  final isSelected = selectedIndex() == i;
+                  final dest = destinations[i];
+                  return Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isExtended ? 12 : 8,
+                      vertical: 2,
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(14),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(14),
+                        onTap: () => onTap(i),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          padding: EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: isExtended ? 16 : 0,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(14),
+                            color: isSelected
+                                ? cs.primary.withValues(alpha: 0.12)
+                                : Colors.transparent,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: isExtended
+                                ? MainAxisAlignment.start
+                                : MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                isSelected
+                                    ? (dest.selectedIcon as Icon).icon
+                                    : (dest.icon as Icon).icon,
+                                color: isSelected
+                                    ? cs.primary
+                                    : cs.onSurfaceVariant,
+                                size: 22,
+                              ),
+                              if (isExtended) ...[
+                                const SizedBox(width: 14),
+                                Text(
+                                  (dest.label as Text).data!,
+                                  style: TextStyle(
+                                    color: isSelected
+                                        ? cs.primary
+                                        : cs.onSurfaceVariant,
+                                    fontWeight: isSelected
+                                        ? FontWeight.w600
+                                        : FontWeight.w400,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }),
+
+                const Spacer(),
+
+                // Settings Button
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isExtended ? 12 : 8,
+                    vertical: 2,
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(14),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(14),
+                      onTap: () => context.go('/settings'),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        padding: EdgeInsets.symmetric(
+                          vertical: 12,
+                          horizontal: isExtended ? 16 : 0,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          color: selectedIndex() == 4
+                              ? cs.primary.withValues(alpha: 0.12)
+                              : Colors.transparent,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: isExtended
+                              ? MainAxisAlignment.start
+                              : MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              selectedIndex() == 4
+                                  ? Icons.settings
+                                  : Icons.settings_outlined,
+                              color: selectedIndex() == 4
+                                  ? cs.primary
+                                  : cs.onSurfaceVariant,
+                              size: 22,
+                            ),
+                            if (isExtended) ...[
+                              const SizedBox(width: 14),
+                              Text(
+                                'Settings',
+                                style: TextStyle(
+                                  color: selectedIndex() == 4
+                                      ? cs.primary
+                                      : cs.onSurfaceVariant,
+                                  fontWeight: selectedIndex() == 4
+                                      ? FontWeight.w600
+                                      : FontWeight.w400,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                // Logout Button
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isExtended ? 12 : 8,
+                    vertical: 2,
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(14),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(14),
+                      onTap: () => context.read<AuthProvider>().logout(),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 12,
+                          horizontal: isExtended ? 16 : 0,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: isExtended
+                              ? MainAxisAlignment.start
+                              : MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.logout_rounded,
+                              color: cs.error.withValues(alpha: 0.8),
+                              size: 22,
+                            ),
+                            if (isExtended) ...[
+                              const SizedBox(width: 14),
+                              Text(
+                                'Sign Out',
+                                style: TextStyle(
+                                  color: cs.error.withValues(alpha: 0.8),
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+              ],
             ),
           ),
         ),
       );
     }
 
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Scaffold(
-      backgroundColor: colorScheme.background,
-      appBar: isWide
-          ? null
-          : AppBar(
-              backgroundColor: colorScheme.background,
-              title: const Text('Collectiv'),
-              actions: [
-                IconButton(
-                  icon: Icon(Icons.logout, color: colorScheme.error),
-                  onPressed: () => context.read<AuthProvider>().logout(),
-                ),
-              ],
-            ),
-      body: isWide
-          ? Row(
-              children: [
-                buildDesktopNav(),
-                VerticalDivider(thickness: 1, width: 1, color: colorScheme.outlineVariant),
-                Expanded(child: child),
-              ],
-            )
-          : Stack(
-              children: [
-                child,
-                Positioned(
-                  bottom: 16,
-                  left: 16,
-                  right: 16,
-                  child: GlassPanel(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    borderRadius: 32,
-                    child: BottomNavigationBar(
-                      elevation: 0,
-                      backgroundColor: Colors.transparent,
-                      type: BottomNavigationBarType.fixed,
-                      currentIndex: getSelectedIndex(),
-                      onTap: onDestinationSelected,
-                      selectedItemColor: colorScheme.primary,
-                      unselectedItemColor: colorScheme.outline,
-                      showUnselectedLabels: true,
-                      items: destinations
-                          .map((d) => BottomNavigationBarItem(
-                                icon: d.icon,
-                                activeIcon: d.selectedIcon,
-                                label: (d.label as Text).data,
-                              ))
-                          .toList(),
+    // ─── Mobile Bottom Nav ───
+    Widget mobileNav() {
+      return Positioned(
+        bottom: 12,
+        left: 12,
+        right: 12,
+        child: GlassPanel(
+          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+          borderRadius: 28,
+          blur: 32,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              ...List.generate(destinations.length, (i) {
+                final isSelected = selectedIndex() == i;
+                final dest = destinations[i];
+                return InkWell(
+                  borderRadius: BorderRadius.circular(16),
+                  onTap: () => onTap(i),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 8,
+                      horizontal: 16,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      color: isSelected
+                          ? cs.primary.withValues(alpha: 0.12)
+                          : Colors.transparent,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          isSelected
+                              ? (dest.selectedIcon as Icon).icon
+                              : (dest.icon as Icon).icon,
+                          color: isSelected ? cs.primary : cs.onSurfaceVariant,
+                          size: 22,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          (dest.label as Text).data!,
+                          style: TextStyle(
+                            color: isSelected
+                                ? cs.primary
+                                : cs.onSurfaceVariant,
+                            fontSize: 10,
+                            fontWeight: isSelected
+                                ? FontWeight.w600
+                                : FontWeight.w400,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
+                );
+              }),
+              // Settings icon on mobile
+              InkWell(
+                borderRadius: BorderRadius.circular(16),
+                onTap: () => context.go('/settings'),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 16,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    color: selectedIndex() == 4
+                        ? cs.primary.withValues(alpha: 0.12)
+                        : Colors.transparent,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        selectedIndex() == 4
+                            ? Icons.settings
+                            : Icons.settings_outlined,
+                        color: selectedIndex() == 4
+                            ? cs.primary
+                            : cs.onSurfaceVariant,
+                        size: 22,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Settings',
+                        style: TextStyle(
+                          color: selectedIndex() == 4
+                              ? cs.primary
+                              : cs.onSurfaceVariant,
+                          fontSize: 10,
+                          fontWeight: selectedIndex() == 4
+                              ? FontWeight.w600
+                              : FontWeight.w400,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ],
-            ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // ─── Background ───
+    Widget background() {
+      return Container(
+        decoration: BoxDecoration(
+          color: cs.surface,
+          gradient: RadialGradient(
+            center: const Alignment(-0.6, -0.8),
+            radius: 1.8,
+            colors: [cs.primary.withValues(alpha: 0.07), cs.surface],
+          ),
+        ),
+        child: CustomPaint(
+          painter: _SubtleGridPainter(cs.outline.withValues(alpha: 0.04)),
+          child: const SizedBox.expand(),
+        ),
+      );
+    }
+
+    return Scaffold(
+      backgroundColor: cs.surface,
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          background(),
+          SafeArea(
+            bottom: false,
+            child: isWide
+                ? Row(
+                    children: [
+                      desktopNav(),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            top: 12,
+                            right: 12,
+                            bottom: 12,
+                          ),
+                          child: child,
+                        ),
+                      ),
+                    ],
+                  )
+                : Stack(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 80),
+                        child: child,
+                      ),
+                      mobileNav(),
+                    ],
+                  ),
+          ),
+        ],
+      ),
     );
   }
+}
+
+/// Paints a subtle dot grid for depth.
+class _SubtleGridPainter extends CustomPainter {
+  final Color color;
+  _SubtleGridPainter(this.color);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()..color = color;
+    const spacing = 32.0;
+    for (double x = 0; x < size.width; x += spacing) {
+      for (double y = 0; y < size.height; y += spacing) {
+        canvas.drawCircle(Offset(x, y), 0.6, paint);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

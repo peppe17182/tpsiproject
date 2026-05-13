@@ -41,7 +41,9 @@ class AuthProvider extends ChangeNotifier {
         'email': email,
         'password': password,
       });
-      final token = response['api_token'] ?? response['token']; // Adjust based on actual API
+      final token =
+          response['api_token'] ??
+          response['token']; // Adjust based on actual API
       if (token != null) {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('api_token', token);
@@ -61,6 +63,28 @@ class AuthProvider extends ChangeNotifier {
         'email': email,
         'password': password,
       });
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<void> updateProfile(Map<String, dynamic> data) async {
+    if (_currentUser == null) return;
+    _setLoading(true);
+    try {
+      await _apiService.put('/users/${_currentUser!.id}', data);
+      await fetchMe();
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<void> deleteAccount() async {
+    if (_currentUser == null) return;
+    _setLoading(true);
+    try {
+      await _apiService.delete('/users/${_currentUser!.id}');
+      await logout();
     } finally {
       _setLoading(false);
     }

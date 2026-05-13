@@ -9,10 +9,12 @@ import '../screens/home_screen.dart';
 import '../screens/categories_screen.dart';
 import '../screens/items_screen.dart';
 import '../screens/stats_screen.dart';
+import '../screens/settings_screen.dart';
 import '../widgets/app_layout.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
-final GlobalKey<NavigatorState> _shellNavigatorKey = GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> _shellNavigatorKey =
+    GlobalKey<NavigatorState>();
 
 GoRouter createRouter(AuthProvider authProvider) {
   return GoRouter(
@@ -21,7 +23,9 @@ GoRouter createRouter(AuthProvider authProvider) {
     refreshListenable: authProvider,
     redirect: (context, state) {
       final isAuthenticated = authProvider.isAuthenticated;
-      final isAuthRoute = state.matchedLocation == '/login' || state.matchedLocation == '/register';
+      final isAuthRoute =
+          state.matchedLocation == '/login' ||
+          state.matchedLocation == '/register';
 
       if (!isAuthenticated && !isAuthRoute) {
         return '/login';
@@ -32,10 +36,7 @@ GoRouter createRouter(AuthProvider authProvider) {
       return null;
     },
     routes: [
-      GoRoute(
-        path: '/login',
-        builder: (context, state) => const LoginScreen(),
-      ),
+      GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
       GoRoute(
         path: '/register',
         builder: (context, state) => const RegisterScreen(),
@@ -46,10 +47,7 @@ GoRouter createRouter(AuthProvider authProvider) {
           return AppLayout(child: child);
         },
         routes: [
-          GoRoute(
-            path: '/',
-            builder: (context, state) => const HomeScreen(),
-          ),
+          GoRoute(path: '/', builder: (context, state) => const HomeScreen()),
           GoRoute(
             path: '/categories',
             builder: (context, state) => const CategoriesScreen(),
@@ -61,6 +59,10 @@ GoRouter createRouter(AuthProvider authProvider) {
           GoRoute(
             path: '/stats',
             builder: (context, state) => const StatsScreen(),
+          ),
+          GoRoute(
+            path: '/settings',
+            builder: (context, state) => const SettingsScreen(),
           ),
         ],
       ),
