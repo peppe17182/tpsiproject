@@ -1,3 +1,11 @@
+INSERT INTO `users` (`id`, `username`, `email`, `password_hash`, `api_token`, `created_at`) VALUES
+(1, 'giro', 'giro@giro.it', '$2y$10$3sSpGrae5Tyl9h9IbZ9wfOjyUH5Zt6OyP/sZSyPG5i2HhmgEssCzS', 'ac000dde13c665d704e2a6a53172628b8af124ad9872bbce7e5132b855665ac9', '2026-05-12 09:53:10'),
+(2, 'mario', 'mario@test.it', '$2y$10$6iw7HaY5dIjcJjicS7YikeyUHwiDAO9hW8AL6HHZocbyDlkoO1fwG', '9a8926f6d5e74289b779ed642e9cc4ce1ea643c60fd26f61df15f4ca39d5f4a6', '2026-05-14 08:48:50'),
+(3, 'luigi', 'luigi@test.it', '$2y$10$leXk.t19pbAiibf6lS5LIOMujhpTfK6ayrcGguekt1X1.zUrtToIq', '58ea35109f8db06b63c2bc2af7eb2d609078b2eff6839d9060a065cd8c513420', '2026-05-14 08:48:51'),
+(4, 'anna', 'anna@test.it', '$2y$10$K.tzWsgH74lZOVKHbQCbn.zDGfAMCDJXi1Az4mpxnhBiDTk8nGWfi', 'fb887b98e5e5525d1cb620d98dbeea080a9cc4facf728c2e608b6b2f1b7415fb', '2026-05-14 08:48:51'),
+(5, 'sofia', 'sofia@test.it', '$2y$10$bekJluKe8tV3Qt2OKX0rteMb9iy4I5F0rie9Ym/KGf8MEUX4wsnfC', 'cb7725ab751fd88c0d45ae8a34e05a8860c284e3eb78c8c6859f2133660e6bad', '2026-05-14 08:48:51');
+
+
 
 
 INSERT INTO `categories` (`id`, `name`, `description`, `user_id`, `created_at`) VALUES
@@ -36,11 +44,3 @@ INSERT INTO `items` (`id`, `name`, `description`, `rating`, `acquisition_date`, 
 (41, 'Oggetto 2 di sofia', 'Oggetto con immagine caricata via API', 2, '2025-07-24', '/uploads/items/item_41_6a0599c81f1e83.12827856.jpg', 5, 13, '2026-05-14 09:45:43'),
 (42, 'Oggetto 3 di sofia', 'Oggetto con immagine caricata via API', 4, '2025-11-24', '/uploads/items/item_42_6a0599c85596c5.02484045.jpg', 5, 13, '2026-05-14 09:45:44'),
 (43, 'Oggetto 4 di sofia', 'Oggetto con immagine caricata via API', 2, '2025-07-13', '/uploads/items/item_43_6a0599c88fe9c2.88370284.jpg', 5, 13, '2026-05-14 09:45:44');
-
-
-INSERT INTO `users` (`id`, `username`, `email`, `password_hash`, `api_token`, `created_at`) VALUES
-(1, 'giro', 'giro@giro.it', '$2y$10$3sSpGrae5Tyl9h9IbZ9wfOjyUH5Zt6OyP/sZSyPG5i2HhmgEssCzS', 'ac000dde13c665d704e2a6a53172628b8af124ad9872bbce7e5132b855665ac9', '2026-05-12 09:53:10'),
-(2, 'mario', 'mario@test.it', '$2y$10$6iw7HaY5dIjcJjicS7YikeyUHwiDAO9hW8AL6HHZocbyDlkoO1fwG', '9a8926f6d5e74289b779ed642e9cc4ce1ea643c60fd26f61df15f4ca39d5f4a6', '2026-05-14 08:48:50'),
-(3, 'luigi', 'luigi@test.it', '$2y$10$leXk.t19pbAiibf6lS5LIOMujhpTfK6ayrcGguekt1X1.zUrtToIq', '58ea35109f8db06b63c2bc2af7eb2d609078b2eff6839d9060a065cd8c513420', '2026-05-14 08:48:51'),
-(4, 'anna', 'anna@test.it', '$2y$10$K.tzWsgH74lZOVKHbQCbn.zDGfAMCDJXi1Az4mpxnhBiDTk8nGWfi', 'fb887b98e5e5525d1cb620d98dbeea080a9cc4facf728c2e608b6b2f1b7415fb', '2026-05-14 08:48:51'),
-(5, 'sofia', 'sofia@test.it', '$2y$10$bekJluKe8tV3Qt2OKX0rteMb9iy4I5F0rie9Ym/KGf8MEUX4wsnfC', 'cb7725ab751fd88c0d45ae8a34e05a8860c284e3eb78c8c6859f2133660e6bad', '2026-05-14 08:48:51');
