@@ -9,13 +9,13 @@ $iniPath = __DIR__ . '/../config.ini';
 if (!file_exists($iniPath)) {
     // Fallback: valori di default
     define('DB_HOST', '127.0.0.1');
-    define('DB_NAME', 'collector_tracker');
+    define('DB_NAME', 'collectiv');
     define('DB_USER', 'root');
     define('DB_PASS', '');
 } else {
     $cfg = parse_ini_file($iniPath, true);
     define('DB_HOST', $cfg['database']['host'] ?? '127.0.0.1');
-    define('DB_NAME', $cfg['database']['dbname'] ?? 'collector_tracker');
+    define('DB_NAME', $cfg['database']['dbname'] ?? 'collectiv');
     define('DB_USER', $cfg['database']['user'] ?? 'root');
     define('DB_PASS', $cfg['database']['password'] ?? '');
 }

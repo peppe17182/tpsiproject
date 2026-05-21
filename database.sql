@@ -1,5 +1,5 @@
 -- =============================================================
--- Collector Tracker - Script DDL per la creazione del database
+-- Collectiv - Script DDL per la creazione del database
 -- =============================================================
 
 CREATE DATABASE IF NOT EXISTS collectiv

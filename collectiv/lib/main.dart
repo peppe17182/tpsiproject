@@ -23,19 +23,19 @@ void main() async {
         ChangeNotifierProvider(create: (_) => ItemProvider()),
         ChangeNotifierProvider(create: (_) => StatsProvider()),
       ],
-      child: const CollectorTrackerApp(),
+      child: const CollectivApp(),
     ),
   );
 }
 
-class CollectorTrackerApp extends StatefulWidget {
-  const CollectorTrackerApp({super.key});
+class CollectivApp extends StatefulWidget {
+  const CollectivApp({super.key});
 
   @override
-  State<CollectorTrackerApp> createState() => _CollectorTrackerAppState();
+  State<CollectivApp> createState() => _CollectivAppState();
 }
 
-class _CollectorTrackerAppState extends State<CollectorTrackerApp> {
+class _CollectivAppState extends State<CollectivApp> {
   GoRouter? _router;
 
   @override
