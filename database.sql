@@ -2,11 +2,11 @@
 -- Collector Tracker - Script DDL per la creazione del database
 -- =============================================================
 
-CREATE DATABASE IF NOT EXISTS collector_tracker
+CREATE DATABASE IF NOT EXISTS collectiv
     CHARACTER SET utf8mb4
     COLLATE utf8mb4_unicode_ci;
 
-USE collector_tracker;
+USE collectiv;
 
 -- Tabella Utenti (collezionisti)
 CREATE TABLE IF NOT EXISTS users (
