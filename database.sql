@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS items (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
     description TEXT,
-    rating INT NOT NULL DEFAULT 1 CHECK (rating BETWEEN 1 AND 10),
+    rating INT NOT NULL DEFAULT 1 CHECK (rating BETWEEN 1 AND 5),
     acquisition_date DATE,
     image_url VARCHAR(255),
     user_id INT NOT NULL,
